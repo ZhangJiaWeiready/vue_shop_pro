@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<script type="text/javascript">
+
+  let obj = {
+    name: 'damu',
+    age: '180'
+  }
+  let newStr = ''
+  Object.keys(obj).forEach(key =>
+    newStr += key + '=' + obj[key] + '&'
+  )
+  // 截取 从0开始到最后一个& 但是不包含最后一个
+  newStr = newStr.substring(0,newStr.lastIndexOf('0'))
+  console.log(newStr)
+
+</script>
+</body>
+</html>
