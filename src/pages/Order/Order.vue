@@ -4,7 +4,9 @@
     <section class="order_no_login">
       <img src="./images/order/person.png">
       <h3>登录后查看外卖订单</h3>
-      <button>立即登陆</button>
+      <router-link to='/login'>
+        <button>立即登陆</button>
+      </router-link>
     </section>
   </section>
 </template>
@@ -35,7 +37,7 @@
         padding 10px 0
         font-size 17px
         color #6a6a6a
-      >button
+      button
         display inline-block
         background #02a774
         font-size 14px
