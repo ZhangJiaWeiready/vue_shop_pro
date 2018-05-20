@@ -1,7 +1,7 @@
 <template>
   <div class="shop_container">
     <ul class="shop_list" v-if="shops.length">
-      <li class="shop_li border-1px" v-for='(shop,index) in shops' :key='index'>
+      <li class="shop_li border-1px" v-for='(shop,index) in shops' @click='toShops' :key='index'>
         <a>
           <div class="shop_left">
             <img class="shop_img" :src= "baseImgUrl + shop.image_path">
@@ -62,6 +62,11 @@
       },
       components: {
         Stars
+      },
+      methods: {
+        toShops () {
+          this.$router.push('/shop')
+        }
       }
     }
 </script>

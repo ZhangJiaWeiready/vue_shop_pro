@@ -41,7 +41,7 @@
               </section>
               <section class="login_message">
                 <input type="text" maxlength="11" placeholder="验证码" v-model='captcha'>
-                <img class="get_verification" src="./images/captcha.svg" alt="captcha">
+                <img class="get_verification" ref='captcha' src="http://localhost:4000/captcha" alt="captcha" @click='getCaptcha'>
               </section>
             </section>
           </div>
@@ -59,6 +59,7 @@
 
 <script>
     import AlertTip from '../../components/AlertTip/AlertTip'
+    import {reqSendCode,reqPwdLogin,reqSmsLogin,} from '../../api'
     export default {
       data () {
         return  {
@@ -82,10 +83,7 @@
           get (){
             return /^1\d{10}$/.test(this.phone)
           },
-
         }
-
-
       },
         methods: {
           //当点击提示框确认时
@@ -98,16 +96,29 @@
             this.$router.back()
           },
           //获取验证码
-          getCode (){
+          async getCode (){
             // 点击button按钮 会开启倒计时 暂时设置为30s倒计时
             if (!this.timeEnd){
               this.timeEnd = 30
-              const clearTime = setInterval(()=> {
+              this.clearTime = setInterval(()=> {
                 this.timeEnd--
                 if (this.timeEnd <= 0){
-                  clearInterval(clearTime)
+                  clearInterval(this.clearTime)
                 }
               },1000)
+            }
+            // 发送ajax请求
+            const result = await reqSendCode(this.phone)
+            console.log(this.phone)
+            console.log(result)
+            // 如果发送失败重新获取
+            if (result.code === 1){
+              // 失败并且 清除定时器
+              if(this.timeEnd){
+                clearInterval(this.clearTime)
+                this.timeEnd=0
+              }
+              this.changeShow(result.msg)
             }
 
           },
@@ -117,34 +128,79 @@
             this.alertShow= true
           },
           // 点击登录就会触发 form表单的submit事件
-          login (){
+          async login (){
+            // 只要一点击验证码就需要换
+
+
             //分为短信验证和密码验证
+              // 因为const let 都是块级作用域 所以需要在外边重新 用let
+            let result
             if (this.showChoose){
                 const {phone,code,rightphone} = this
               if (phone===''){
                 this.changeShow ('请输入手机号')
+                return
               }
               if (!/^\d{6}$/.test(code)){
                 this.changeShow ('请输入正确的六位数验证码')
+                return
               }
               if (!rightphone){
                 this.changeShow ('请输入正确的手机号')
+                return
               }
+              // 点击登录发送ajax请求
+               result = await reqSmsLogin({phone,code})
+
             } else {
               const {name,pwd,captcha} = this
               if (!name) {
                 this.changeShow('用户名必须指定')
+                return
               } else if (!pwd) {
                 this.changeShow('请输入密码')
+                return
               } else if (!captcha) {
                 this.changeShow('验证码必须指定')
+                return
               }
+              // 点击 发送请求 密码登录
+               result = await reqPwdLogin({name,pwd,captcha})
+
+            }
+
+            // 发送之后 清除定时器
+            if(this.timeEnd){
+              clearInterval(this.clearTime)
+              this.timeEnd=0
+            }
+            // 进行判断
+            if (result.code === 0 ){
+              /*
+              成功之后
+                跳转到个人主页
+                保存个人信息到state
+               */
+              const userInfo = result.data
+              // 分发同步action
+              this.$store.dispatch('recordUser',userInfo)
+
+              this.$router.replace('/profile')
+            }else {
+              this.getCaptcha()
+              // 失败 需要提示错误信息
+              this.changeShow(result.msg)
             }
 
 
 
-          }
+          },
+          // 获取图形验证码
+          getCaptcha (){
+            //每次点击需要重新有一个url值， 所以采用加入时间戳的方法 解决
+            this.$refs.captcha.src='http://localhost:4000/captcha?time'+Date.now()
 
+          }
         }
     }
 </script>

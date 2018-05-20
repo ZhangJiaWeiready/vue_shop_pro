@@ -4,12 +4,22 @@
 import {
   RECEIVE_ADDRESS,
   RECEIVE_CATEGORYS,
-  RECEIVE_SHOPS
+  RECEIVE_SHOPS,
+  RECEIVE_USERINFO,
+  RESET_INFO,
+  RECEIVE_GOODS,
+  RECEIVE_RATINGS,
+  RECEIVE_INFO
 } from "./mutation-type";
 import {
   reqAddress,
   reqFoodaCategory,
-  reqShops
+  reqShops,
+  reqUserInfo,
+  reqLogout,
+  reqShopGoods,
+  reqShopRatings,
+  reqShopInfo
 } from "../api";
 
 export default {
@@ -34,7 +44,7 @@ export default {
     //提交mutation
     if (result.code === 0){
       const categorys = result.data
-      console.log(categorys) //已经获取信息
+      // console.log(categorys) //已经获取信息
       commit(RECEIVE_CATEGORYS, {categorys})
     }
 
@@ -46,5 +56,50 @@ export default {
       const shops = result.data
       commit(RECEIVE_SHOPS,{shops})
     }
-  }
+  },
+  recordUser ({commit},userInfo) {
+    commit(RECEIVE_USERINFO,{userInfo})
+  },
+  async getUserInfo ({commit}) {
+    //发送ajax请求
+      const result= await reqUserInfo()
+    if (result.code === 0) {
+        const userInfo = result.data
+      commit(RECEIVE_USERINFO,{userInfo})
+    }
+  },
+  async logOut ({commit}) {
+    const result = await reqLogout()
+    if (result.code === 0) {
+      commit(RESET_INFO)
+    }
+  },
+  async getShopGoods ( {commit}) {
+    const result = await reqShopGoods()
+    if (result.code === 0) {
+      const goods = result.data
+      commit( RECEIVE_GOODS,{goods})
+    }
+  },
+
+
+  async getShopInfo ( {commit}) {
+    const result = await reqShopInfo()
+
+    if (result.code === 0) {
+      console.log(111+ result.data)
+      const info = result.data
+      commit( RECEIVE_INFO, {info})
+    }
+  },
+
+
+  async getRatings ( {commit}) {
+    const result = await reqShopRatings()
+    if (result.code === 0) {
+      const ratings = result.data
+      commit( RECEIVE_RATINGS,{ratings})
+    }
+  },
+
 }

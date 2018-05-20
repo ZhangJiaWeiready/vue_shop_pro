@@ -5,8 +5,12 @@
       <router-link class="header_search" slot='search' to='/search'>
         <i class="iconfont icon-sousuo"></i>
       </router-link>
-      <router-link class="header_login" slot='login' to='/login'>
-        <span class="header_login_text">登录|注册</span>
+      <router-link class="header_login" slot='login' :to="userInfo._id?'':'/login'">
+        <span class="header_login_text" v-show='!userInfo._id'>登录|注册</span>
+        <span class="header_login_text" v-show='userInfo._id'>
+           <i class="iconfont icon-person"></i>
+        </span>
+
       </router-link>
     </Header>
     <!--首页导航-->
@@ -55,16 +59,14 @@
       mounted () {
         this.$store.dispatch('getFoodCategory')
         this.$store.dispatch('getShops')
-
-
       },
       computed: {
-        ...mapState(['address', 'categorys']),
+        ...mapState(['address', 'categorys','userInfo']),
         //根据categroys 生成一个二维数组
         categorysArr () {
           //获取从后台返回的信息 是一个数组
           const {categorys} = this
-          console.log(categorys)
+
           // 准备一个空的2维数组
           let arr = []
           //准备一个小数组 最长长度为8
@@ -96,6 +98,7 @@
           )
         }
       },
+
       components: {
         Header,
         ShopLists

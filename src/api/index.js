@@ -13,21 +13,42 @@ export const reqFoodaCategory = () => ajax(Base_url + '/index_category')
 // 3、根据经纬度获取商铺列表  data接收的是一个对象
 export const reqShops = ({latitude, longitude}) => ajax(Base_url + '/shops', {latitude, longitude})
 // 4、根据经纬度和关键字搜索商铺列表
-export const reqShopLists = ({latitude, longitude, key}) => ajax(Base_url + '/search_shops', {latitude, longitude, key})
+export const reqSeaerchShop = ({latitude, longitude, key}) => ajax(Base_url + '/search_shops', {latitude, longitude, key})
 // 5、获取一次性验证码
-export const reqCaptcha = () => ajax(Base_url + '/captcha')
+
 // 6、用户名密码登陆
-export const reqPwdLogin = ({name, pwd}) => ajax(Base_url + 'login_pwd', {name, pwd}, 'POST')
+export const reqPwdLogin = ({name, pwd,captcha}) => ajax(Base_url + 'login_pwd', {name, pwd,captcha}, 'POST')
 // 7、发送短信验证码
-export const reqMessagecode = ({phone}) => ajax(Base_url + '/sendcode', {phone})
+export const reqSendCode = (phone) => ajax(Base_url + '/sendcode', {phone})
 // 8、手机号验证码登陆
-export const reqPhoneLogin = ({phone, code}) => ajax(Base_url + '/login_sms', {phone, code}, 'POST')
+export const reqSmsLogin = ({phone, code}) => ajax(Base_url + '/login_sms', {phone, code}, 'POST')
 // 9、根据会话获取用户信息
-export const reqUserinfo = () => ajax(Base_url + '/userinfo')
+export const reqUserInfo = () => ajax(Base_url + '/userinfo')
 // 10、用户登出
-export const reqLoginout = () => ajax(Base_url + '/logout')
+export const reqLogout = () => ajax(Base_url + '/logout')
 
+// 因为这是前台接口所以说不需要 考虑跨域的问题
+// // 11 获取 食物列表
+// export const reqShopGoods = () => ajax('/goods')
+// // 12 获取用户评价
+// export const reqUserRating = () => ajax('/ratings')
+// // 13  获取商家信息
+// export const reqShopInfo = () => ajax('/info')
+//
+// // export function reqAddress(location) {
+// //     ajax(location)
+// // }
+/**
+ * 获取商家信息
+ */
+export const reqShopInfo = () => ajax('/info')
 
-// export function reqAddress(location) {
-//     ajax(location)
-// }
+/**
+ * 获取商家评价数组
+ */
+export const reqShopRatings = () => ajax('/ratings')
+
+/**
+ * 获取商家商品数组
+ */
+export const reqShopGoods = () => ajax('/goods')
