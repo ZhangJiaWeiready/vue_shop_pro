@@ -74,11 +74,13 @@ export default {
       commit(RESET_INFO)
     }
   },
-  async getShopGoods ( {commit}) {
+  async getShopGoods ( {commit}, callBack) {
     const result = await reqShopGoods()
     if (result.code === 0) {
       const goods = result.data
       commit( RECEIVE_GOODS,{goods})
+      // 数据更新了就通知一下组件
+      callBack && callBack()
     }
   },
 
