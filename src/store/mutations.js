@@ -1,7 +1,7 @@
 /*
 直接更新state的多个方法的对象
  */
-
+import Vue from 'vue'
 import {
   RECEIVE_ADDRESS,
   RECEIVE_CATEGORYS,
@@ -10,7 +10,10 @@ import {
   RESET_INFO,
   RECEIVE_GOODS,
   RECEIVE_RATINGS,
-  RECEIVE_INFO
+  RECEIVE_INFO,
+  INCREMENT_FOOD_COUNT,
+  DECREMENT_FOOD_COUNT,
+  RESET_CARTFOODS
 
 } from "./mutation-type";
 
@@ -39,6 +42,34 @@ export default {
   },
   [RECEIVE_INFO] (state, {info}) {
     state.info = info
+  },
+  [INCREMENT_FOOD_COUNT] (state,{food}) {
+    if (!food.count) {
+     // food.cound= 1 //点击的时候就要给他一个初始化的值
+      //因为 count属性本来没有 直接添加的话，不会有数据绑定的
+      // 对象 属性 属性值
+      Vue.set(food, 'count',1)
+      // 将改变的food添加到 cartFood数组中去 然后购物车去获取
+      state.cartFoods.push(food)
+    }else {
+      food.count++
+    }
+  },
+  [DECREMENT_FOOD_COUNT] (state,{food}) {
+    // 当它有值的时候才会减。没用值的时候不会减
+    if (food.count){
+      food.count--
+      if(food.count === 0) {
+        // 增删改
+        state.cartFoods.splice(state.cartFoods.indexOf(food),1)
+      }
+    }
+  },
+  [RESET_CARTFOODS] (state,) {
+    state.cartFoods.forEach(food => {
+      return food.count = 0
+    })
+    state.cartFoods=[]
   }
 
 }

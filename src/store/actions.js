@@ -9,7 +9,10 @@ import {
   RESET_INFO,
   RECEIVE_GOODS,
   RECEIVE_RATINGS,
-  RECEIVE_INFO
+  RECEIVE_INFO,
+  INCREMENT_FOOD_COUNT,
+  DECREMENT_FOOD_COUNT,
+  RESET_CARTFOODS
 } from "./mutation-type";
 import {
   reqAddress,
@@ -104,4 +107,15 @@ export default {
     }
   },
 
+  // 改变 food的数量
+  updateFoodCount ({commit}, {isAdd,food}) {
+    if (isAdd) {
+      commit(INCREMENT_FOOD_COUNT,{food})
+    }else {
+      commit(DECREMENT_FOOD_COUNT,{food})
+    }
+  },
+  resetCartFoods ({commit}) {
+    commit(RESET_CARTFOODS)
+  }
 }
