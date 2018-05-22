@@ -18,36 +18,43 @@
           </div>
         </div>
       </div>
-      <div class="shopcart-list" v-show='ListShow'>
+      <transition name='move'>
+        <div class="shopcart-list" v-show='ListShow'>
           <div class="list-header">
             <h1 class="title">购物车</h1>
             <span class="empty" @click='emptyFood'>清空</span>
           </div>
-        <div class="list-content">
-          <ul class='listFoods'>
-            <li class="food" v-for='(cartFood,index) in cartFoods' :key='index'>
-              <span class="name">{{cartFood.name}}</span>
-              <div class="price"><span>￥{{cartFood.price}}</span></div>
-              <div class="cartcontrol-wrapper">
-                <div class="cartcontrol">
-                  <CartControl :food='cartFood'/>
+          <div class="list-content">
+            <ul class='listFoods'>
+              <li class="food" v-for='(cartFood,index) in cartFoods' :key='index'>
+                <span class="name">{{cartFood.name}}</span>
+                <div class="price"><span>￥{{cartFood.price}}</span></div>
+                <div class="cartcontrol-wrapper">
+                  <div class="cartcontrol">
+                    <CartControl :food='cartFood'/>
+                  </div>
                 </div>
-              </div>
-            </li>
-          </ul>
+              </li>
+            </ul>
+          </div>
         </div>
-      </div>
+      </transition>
+
     </div>
-    <div class="list-mask" v-show='ListShow' @click='showCart'></div>
+    <transition name='maskMove'>
+      <div class="list-mask" v-show='ListShow' @click='showCart'></div>
+    </transition>
+
   </div>
 
 </template>
 
 <script>
   import BScroll from 'better-scroll'
-  import {Toast} from 'mint-ui'
+  import {Toast,MessageBox} from 'mint-ui'
   import {mapState,mapGetters} from 'vuex'
   import CartControl from '../CartControl/CartControl'
+  import actions from "../../store/actions";
     export default {
       data () {
         return {
@@ -55,11 +62,29 @@
         }
       },
       updated () {
-        new BScroll('.list-content',{
-          click: true,
-          bounce: false,
-          momentum: false
+        /*
+         问题 ：
+            1. 会创建多次scroll
+            2. 有时候第一次点击它会失效，第二次才可以
+        解决
+            1.  使用单例， 判断是否创建
+            2. 使用实例对象的方法 --  refresh
+                让滚动条刷新一下，重新统计内容高度
+         */
+        //如果不存在就创建
+
+        this.$nextTick(()=> {
+          if (!this.scroll){
+            this.scroll = new BScroll('.list-content',{
+              click: true,
+            })
+          } else {
+            this.scroll.refresh()
+            // 让滚动条刷新一下，重新统计内容高度
+          }
+
         })
+
       },
       computed: {
           // 需要购物车中的 商品列表  cartFood 数组 --
@@ -71,7 +96,7 @@
             const {minPrice} = this.info
             let {totalCount,totalPrice} = this
             if (totalCount === 0) {
-              return ` 配送费${minPrice}元`
+              return ` ${minPrice}元起送`
             } if(totalPrice < minPrice) {
               return  `还差${minPrice-totalPrice}起送`
             } else{
@@ -81,11 +106,23 @@
           classIsEnough () {
             return this.totalPrice>= this.info.minPrice? 'enough' : 'not-enough'
           },
-          ListShow (){
-            if (this.totalCount === 0){
+          ListShow () {
+            if (this.totalCount === 0) {
               this.isShow = false
               return false
             }
+            // if (this.isShow){
+            //
+            //   this.$nextTick(()=> {
+            //      if(!this.scroll){
+            //     this.scroll = new BScroll('.list-content',{
+            //       click: true,
+            //     })
+            //      } else {
+            //        this.scroll.refresh()
+            //      }
+            //   })
+            // }
             return this.isShow
           }
         },
@@ -112,7 +149,11 @@
           }
         },
         emptyFood (){
-          this.$store.dispatch('resetCartFoods')
+          MessageBox.confirm('确认清空吗?').then(action => {
+            this.$store.dispatch('resetCartFoods')
+          },()=>{});
+          // 后面跟两个回调函数 一个确认的回调，一个是取消的回调
+          // 如果只写一个的话 会有警告 ， so写个空的都可以
         }
       }
     }
@@ -227,9 +268,9 @@
       z-index -1
       width 100%
       transform translateY(-100%)
-      &.swipe-enter-active, &.swipe-leave-active
+      &.move-enter-active, &.move-leave-active
         transition transform .3s
-      &.swipe-enter, &.swipe-leave-to
+      &.move-enter, &.move-leave-to
         transform translateY(0)
       .list-header
         height 40px
@@ -284,9 +325,9 @@
     backdrop-filter blur(10px)
     opacity 1
     background rgba(7, 17, 27, 0.6)
-    &.fade-enter-active, &.fade-leave-active
+    &.maskMove-enter-active, &.maskMove-leave-active
       transition all 0.5s
-    &.fade-enter, &.fade-leave-to
+    &.maskMove-enter, &.maskMove-leave-to
       opacity 0
       background rgba(7, 17, 27, 0)
 </style>

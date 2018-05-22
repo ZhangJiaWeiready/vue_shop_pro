@@ -12,3 +12,5 @@ export const INCREMENT_FOOD_COUNT = 'increment_food_count'
 export const DECREMENT_FOOD_COUNT = 'decrement_food_count'
 export const RESET_CARTFOODS = 'reset_cartfoods'
 export const RESET_INFO = 'reset_info'
+export const SEARCH_GOODS = 'search_goods'
+

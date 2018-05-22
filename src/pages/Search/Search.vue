@@ -1,18 +1,34 @@
 <template>
   <section class="search">
     <Header title='搜索'/>
-    <form class="search_form" action="#">
-      <input type="search" name="search" placeholder="请输入商家或美食名称" class="search_input">
-      <input type="submit" name="submit" class="search_submit">
+    <form class="search_form" action="#" @submit.prevent='searchShop(searchMsg)'>
+      <input type="search" name="search" placeholder="请输入商家或美食名称" class="search_input" v-model='searchMsg'>
+      <input type="submit" name="submit" class="search_submit" >
     </form>
+    <SearchList :searchMsg='searchMsg'/>
   </section>
 </template>
 
 <script>
   import Header from '../../components/Header/Header'
+  import SearchList from '../../components/SearchList/SearchList'
   export default {
+    data (){
+      return {
+        searchMsg: ''
+      }
+    },
     components: {
-      Header
+      Header,
+      SearchList
+    },
+    methods: {
+      searchShop (keyword) {
+        if (this.searchMsg){
+          this.$store.dispatch('getSearchShops',{keyword})
+        }
+
+      }
     }
   }
 </script>
@@ -21,6 +37,8 @@
   @import "../../common/stylus/mixins.styl"
   .search  //搜索
     width 100%
+    height 100%
+    overflow hidden
     .search_form
       clearFix()
       margin-top 45px

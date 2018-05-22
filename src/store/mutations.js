@@ -13,7 +13,8 @@ import {
   RECEIVE_INFO,
   INCREMENT_FOOD_COUNT,
   DECREMENT_FOOD_COUNT,
-  RESET_CARTFOODS
+  RESET_CARTFOODS,
+  SEARCH_GOODS
 
 } from "./mutation-type";
 
@@ -52,6 +53,7 @@ export default {
       // 将改变的food添加到 cartFood数组中去 然后购物车去获取
       state.cartFoods.push(food)
     }else {
+
       food.count++
     }
   },
@@ -66,10 +68,15 @@ export default {
     }
   },
   [RESET_CARTFOODS] (state,) {
+    // 先清除food中的count
     state.cartFoods.forEach(food => {
       return food.count = 0
     })
+    // 如果只是单纯的 清空它 food的count还会存在
     state.cartFoods=[]
+  },
+  [SEARCH_GOODS] (state,{searchShops}) {
+    state.searchShops = searchShops
   }
 
 }

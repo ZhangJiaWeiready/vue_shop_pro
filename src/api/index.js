@@ -13,7 +13,7 @@ export const reqFoodaCategory = () => ajax(Base_url + '/index_category')
 // 3、根据经纬度获取商铺列表  data接收的是一个对象
 export const reqShops = ({latitude, longitude}) => ajax(Base_url + '/shops', {latitude, longitude})
 // 4、根据经纬度和关键字搜索商铺列表
-export const reqSeaerchShop = ({latitude, longitude, key}) => ajax(Base_url + '/search_shops', {latitude, longitude, key})
+export const reqSeaerchShop = ({geohash, keyword}) => ajax(Base_url + '/search_shops', {geohash, keyword})
 // 5、获取一次性验证码
 
 // 6、用户名密码登陆

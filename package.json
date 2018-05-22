@@ -13,10 +13,13 @@
   "dependencies": {
     "axios": "^0.18.0",
     "better-scroll": "^1.11.1",
+    "date-fns": "^1.29.0",
     "mint-ui": "^2.2.13",
     "mockjs": "^1.0.1-beta3",
+    "moment": "^2.22.1",
     "swiper": "^4.2.6",
     "vue": "^2.5.2",
+    "vue-lazyload": "^1.2.3",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1"
   },
@@ -62,7 +65,7 @@
     "stylus-loader": "^3.0.2",
     "uglifyjs-webpack-plugin": "^1.1.1",
     "url-loader": "^0.5.8",
-    "vue-loader": "^13.3.0",
+    "vue-loader": "^13.7.1",
     "vue-style-loader": "^3.0.1",
     "vue-template-compiler": "^2.5.2",
     "webpack": "^3.6.0",

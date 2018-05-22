@@ -14,6 +14,12 @@ export default {
     return state.cartFoods.reduce((pre,nextFood) => {
       return pre+nextFood.count*nextFood.price
     },0)
+  },
+  positiveSize (state) {
+    return state.ratings.reduce( (pre,rating) => {
+      const value = (rating.rateType===0)?1:0
+      return pre + value
+    },0)
   }
 
 }

@@ -12,7 +12,8 @@ import {
   RECEIVE_INFO,
   INCREMENT_FOOD_COUNT,
   DECREMENT_FOOD_COUNT,
-  RESET_CARTFOODS
+  RESET_CARTFOODS,
+  SEARCH_GOODS
 } from "./mutation-type";
 import {
   reqAddress,
@@ -22,7 +23,8 @@ import {
   reqLogout,
   reqShopGoods,
   reqShopRatings,
-  reqShopInfo
+  reqShopInfo,
+  reqSeaerchShop
 } from "../api";
 
 export default {
@@ -99,14 +101,14 @@ export default {
   },
 
 
-  async getRatings ( {commit}) {
+  async getRatings ( {commit} , callback) {
     const result = await reqShopRatings()
     if (result.code === 0) {
       const ratings = result.data
       commit( RECEIVE_RATINGS,{ratings})
     }
+    callback&&callback()
   },
-
   // 改变 food的数量
   updateFoodCount ({commit}, {isAdd,food}) {
     if (isAdd) {
@@ -117,5 +119,17 @@ export default {
   },
   resetCartFoods ({commit}) {
     commit(RESET_CARTFOODS)
+  },
+
+  // 得到搜索的结果
+  async getSearchShops ({commit,state}, {keyword}) {
+    const {latitude,longitude} = state
+    const geohash = latitude + ',' + longitude
+
+    const result = await reqSeaerchShop({keyword,geohash})
+    if (result.code === 0) {
+      const searchShops = result.data
+      commit(SEARCH_GOODS,{searchShops})
+    }
   }
 }
