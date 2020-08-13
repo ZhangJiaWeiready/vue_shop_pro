@@ -10,7 +10,7 @@
         <span class="header_login_text" v-show='userInfo._id'>
            <i class="iconfont icon-person"></i>
         </span>
-
+        <span>测试git</span>  
       </router-link>
     </Header>
     <!--首页导航-->
